@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#101024">
+<title>Neon Spin — Free Play</title>
+<style>
+:root{--bg:#101024;--panel:#1b1b38;--gold:#ffd76a;--pink:#ff4ecb;--cyan:#51f5ee;--muted:#b7b7d5}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#29205b 0%,#101024 55%);color:#fff;font-family:system-ui,-apple-system,"Noto Sans Myanmar",sans-serif;padding:18px 12px 32px}
+.app{width:min(100%,520px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.logo{font-weight:900;letter-spacing:1px;font-size:20px}.logo span{color:var(--cyan)}.tag{font-size:11px;color:var(--cyan);border:1px solid #51f5ee66;border-radius:99px;padding:5px 8px}
+.hero{text-align:center;margin:18px 0 16px}.hero h1{font-size:clamp(25px,7vw,36px);margin:0;background:linear-gradient(90deg,var(--gold),var(--pink));background-clip:text;color:transparent}.hero p{color:var(--muted);font-size:13px;margin:5px 0}
+.balance{display:flex;justify-content:space-between;align-items:center;background:#ffffff0a;border:1px solid #ffffff18;padding:14px 16px;border-radius:16px;margin-bottom:14px}.balance small{display:block;color:var(--muted);font-size:11px}.coins{font-weight:900;font-size:24px;color:var(--gold);font-variant-numeric:tabular-nums}.coin-icon{font-size:22px}
+.machine{background:linear-gradient(145deg,#28284c,#17172e);border:1px solid #ffffff25;border-radius:24px;padding:15px;box-shadow:0 18px 45px #0005,inset 0 1px #ffffff16}.machine-title{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;color:var(--muted);font-size:11px;letter-spacing:1.4px}.lights{color:var(--pink)}
+.reels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;background:#0b0b19;padding:8px;border-radius:16px;border:2px solid #ffd76a66;box-shadow:inset 0 0 18px #0009}.reel{display:grid;gap:6px;min-width:0}.symbol{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#fff,#d9d9f1);border-radius:9px;font-size:clamp(23px,7vw,35px);box-shadow:inset 0 -3px #0001;transition:transform .12s}.symbol.win{background:linear-gradient(145deg,#fff1a8,#ffbd45);box-shadow:0 0 13px #ffd76a,inset 0 -3px #d98720;transform:scale(1.03)}
+.controls{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.control label{display:block;font-size:11px;color:var(--muted);margin-bottom:7px}.stepper{height:44px;border-radius:12px;border:1px solid #ffffff25;background:#111127;display:flex;align-items:center;justify-content:space-between;overflow:hidden}.stepper button{width:42px;height:100%;background:#ffffff0d;color:#fff;border:0;font-size:22px}.stepper strong{font-size:16px}
+.spin{grid-column:1/-1;border:0;border-radius:14px;padding:15px;background:linear-gradient(100deg,#ffd76a,#ff9b51);color:#281334;font-size:18px;font-weight:1000;letter-spacing:2px;box-shadow:0 5px 0 #a95d2b;cursor:pointer}.spin:active{transform:translateY(2px);box-shadow:0 3px 0 #a95d2b}.spin:disabled{opacity:.55;cursor:wait}
+.result{min-height:48px;text-align:center;padding:14px 8px 2px;font-weight:800;color:var(--gold);font-size:15px}.hint{text-align:center;color:var(--muted);font-size:11px;line-height:1.6;margin:4px 0 0}
+.history{margin-top:14px;background:#ffffff08;border:1px solid #ffffff14;border-radius:16px;padding:13px 15px}.history h2{font-size:13px;margin:0 0 8px}.history-list{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)}.history-row{display:flex;justify-content:space-between;gap:8px}.positive{color:var(--cyan)}.negative{color:#ff829e}
+.footer{text-align:center;color:#8585a8;font-size:10px;margin-top:18px;line-height:1.7}.reset{border:1px solid #ffffff2a;background:transparent;color:var(--muted);border-radius:9px;padding:7px 10px;font-size:11px}
+@media(min-width:420px){.machine{padding:18px}.reels{gap:8px;padding:10px}.symbol{border-radius:11px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top"><div class="logo">✦ NEON <span>SPIN</span></div><div class="tag">FREE PLAY • DEMO</div></header>
+  <section class="hero"><h1>LUCKY REELS</h1><p>Spin for fun. Play with virtual coins only.</p></section>
+  <section class="balance"><div><small>YOUR VIRTUAL BALANCE</small><div class="coins">🪙 <span id="balance">1,000</span></div></div><button class="reset" id="reset">Reset demo</button></section>
+  <section class="machine">
+    <div class="machine-title"><span>★ NEON JACKPOT ★</span><span class="lights">● ● ●</span></div>
+    <div class="reels" id="reels" aria-label="Slot machine reels"></div>
+    <div class="controls">
+      <div class="control"><label>BET PER SPIN</label><div class="stepper"><button id="minus" aria-label="Decrease bet">−</button><strong id="bet">10</strong><button id="plus" aria-label="Increase bet">+</button></div></div>
+      <div class="control"><label>WINNING RULE</label><div class="stepper" style="justify-content:center"><strong>3+ MATCH</strong></div></div>
+      <button class="spin" id="spin">SPIN ✦</button>
+    </div>
+    <div class="result" id="result" aria-live="polite">Good luck! Press SPIN to play.</div>
+    <p class="hint">Demo rules: 3 matching symbols anywhere in a row earns a virtual prize.<br>Virtual coins have no cash value and cannot be bought or withdrawn.</p>
+  </section>
+  <section class="history"><h2>RECENT SPINS</h2><div class="history-list" id="history"><div>No spins yet — try your first spin!</div></div></section>
+  <div class="footer">NEON SPIN • Offline demo prototype<br>Outcomes are random; this demo does not accept real money.</div>
+</main>
+<script>
+(() => {
+  const symbols = [
+    {e:"🍒",w:30,m:2,n:"Cherries"},
+    {e:"🍋",w:25,m:2,n:"Lemon"},
+    {e:"🍇",w:18,m:3,n:"Grapes"},
+    {e:"🔔",w:13,m:4,n:"Bell"},
+    {e:"💎",w:9,m:7,n:"Diamond"},
+    {e:"7️⃣",w:5,m:12,n:"Lucky Seven"}
+  ];
+  const rows=3, cols=5;
+  let balance=1000, bet=10, busy=false, history=[];
+  const $=id=>document.getElementById(id);
+  function pick(){let r=Math.random()*100;for(const s of symbols){r-=s.w;if(r<0)return s;}return symbols[0];}
+  function makeGrid(){
+    const grid=[];
+    for(let r=0;r<rows;r++){grid[r]=[];for(let c=0;c<cols;c++)grid[r][c]=pick();}
+    return grid;
+  }
+  function draw(grid, wins=[]){
+    const root=$("reels");root.innerHTML="";
+    for(let c=0;c<cols;c++){
+      const reel=document.createElement("div");reel.className="reel";
+      for(let r=0;r<rows;r++){
+        const cell=document.createElement("div");cell.className="symbol";
+        cell.textContent=grid[r][c].e;
+        if(wins.some(p=>p.r===r&&p.c===c))cell.classList.add("win");
+        reel.appendChild(cell);
+      }
+      root.appendChild(reel);
+    }
+  }
+  function update(){ $("balance").textContent=balance.toLocaleString();$("bet").textContent=bet.toLocaleString();$("minus").disabled=busy||bet<=10;$("plus").disabled=busy||bet>=100;$("spin").disabled=busy||balance<bet;$("spin").textContent=balance<bet?"OUT OF COINS":"SPIN ✦";}
+  function evaluate(grid){
+    let total=0,wins=[];
+    // Evaluate each of the 3 horizontal rows; only the longest same-symbol run from the left pays.
+    for(let r=0;r<rows;r++){
+      let run=1;
+      while(run<cols && grid[r][run].n===grid[r][0].n)run++;
+      if(run>=3){
+        total += bet * grid[r][0].m * (run===3?1:run===4?2:4);
+        for(let c=0;c<run;c++)wins.push({r,c});
+      }
+    }
+    return {total,wins};
+  }
+  function renderHistory(){
+    const el=$("history");el.innerHTML="";
+    if(!history.length){el.innerHTML="<div>No spins yet — try your first spin!</div>";return;}
+    history.slice(0,5).forEach(h=>{
+      const row=document.createElement("div");row.className="history-row";
+      const left=document.createElement("span");left.textContent=h.label;
+      const right=document.createElement("strong");right.className=h.delta>=0?"positive":"negative";
+      right.textContent=(h.delta>=0?"+":"")+h.delta.toLocaleString()+" coins";
+      row.append(left,right);el.appendChild(row);
+    });
+  }
+  function spin(){
+    if(busy||balance<bet)return;
+    busy=true;balance-=bet;update();$("result").textContent="Spinning… ✨";
+    const button=$("spin");
+    let ticks=0;
+    const timer=setInterval(()=>{
+      draw(makeGrid());ticks++;
+      if(ticks>=9){
+        clearInterval(timer);
+        const grid=makeGrid(),out=evaluate(grid);
+        balance+=out.total;busy=false;draw(grid,out.wins);
+        const delta=out.total-bet;
+        $("result").textContent=out.total>0?`🎉 WIN! +${out.total.toLocaleString()} virtual coins`:"No match this time. Try again!";
+        history.unshift({label:out.total>0?"🎉 Winning spin":"🎰 Spin",delta});
+        renderHistory();update();
+      }
+    },85);
+  }
+  $("minus").addEventListener("click",()=>{if(!busy)bet=Math.max(10,bet-10);update();});
+  $("plus").addEventListener("click",()=>{if(!busy)bet=Math.min(100,bet+10);update();});
+  $("spin").addEventListener("click",spin);
+  $("reset").addEventListener("click",()=>{
+    if(busy)return;
+    balance=1000;bet=10;history=[];
+    $("result").textContent="Balance reset. Good luck!";
+    draw(makeGrid());renderHistory();update();
+  });
+  draw(makeGrid());update();
+})();
+</script>
+</body>
+</html>
