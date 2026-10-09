@@ -1,2 +1,2 @@
-# neon-spin
+index.html
 My Slot Game
